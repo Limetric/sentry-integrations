@@ -1,0 +1,44 @@
+name: Node CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      # Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Determine Node.js version
+      - name: Determine Node.js version
+        run: echo "##[set-output name=NVMRC;]$(cat .nvmrc)"
+        id: nvm
+
+      # Setup Node.js
+      - name: Setup Node.js v${{ steps.nvm.outputs.NVMRC }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+          check-latest: true
+
+      # Build and test library
+      - name: Build and test library
+        run: |
+          npm ci --include=dev
+          npm test
+          npm run build
+        env:
+          CI: true
+          NODE_ENV: production
+
+      # Publish release package
+      - name: Publish release package
+        if: github.ref_type == 'tag'
+        run: |
+         echo -e "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}\n" > ~/.npmrc
+         npm publish
+         rm -f ~/.npmrc
