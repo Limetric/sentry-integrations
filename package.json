@@ -28,7 +28,7 @@
     "browserslist": "^4.21.1"
   },
   "dependencies": {
-    "@sentry/types": "^7.5.0",
+    "@sentry/types": "^7.6.0",
     "@sentry/utils": "^7.5.0"
   }
 }
