@@ -25,7 +25,7 @@
   "devDependencies": {
     "@swc/cli": "^0.1.57",
     "@swc/core": "^1.2.210",
-    "browserslist": "^4.21.1"
+    "browserslist": "^4.21.2"
   },
   "dependencies": {
     "@sentry/types": "^7.5.0",
