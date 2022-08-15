@@ -29,6 +29,6 @@
   },
   "dependencies": {
     "@sentry/types": "^7.5.0",
-    "@sentry/utils": "^7.5.0"
+    "@sentry/utils": "^7.10.0"
   }
 }
