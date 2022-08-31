@@ -1,7 +1,7 @@
 import { EventProcessor, Hub, Integration } from '@sentry/types';
 import { CONSOLE_LEVELS, fill, getGlobalObject, safeJoin, severityLevelFromString } from '@sentry/utils';
 
-const global = getGlobalObject<Window | NodeJS.Global>();
+const global = globalThis; /* getGlobalObject<Window | typeof globalThis>(); */
 
 /** Send Console API calls as Sentry Events */
 export class CaptureConsole implements Integration {
@@ -72,7 +72,7 @@ export class CaptureConsole implements Integration {
 
         // this fails for some browsers. :(
         if (originalConsoleMethod) {
-          originalConsoleMethod.apply(global.console, args);
+          (originalConsoleMethod.apply as Function)(global.console, args);
         }
       });
     });
