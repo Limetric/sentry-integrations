@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "@sentry/types": "^7.11.1",
-    "@sentry/utils": "^7.11.1"
+    "@sentry/utils": "^7.16.0"
   }
 }
