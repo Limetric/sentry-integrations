@@ -6,12 +6,12 @@ export class CaptureConsole implements Integration {
   /**
    * @inheritDoc
    */
-  static id = 'CaptureConsole';
+  public static readonly id = 'CaptureConsole';
 
   /**
    * @inheritDoc
    */
-  name = CaptureConsole.id;
+  public readonly name = CaptureConsole.id;
 
   /**
    * Levels to intercept
@@ -21,7 +21,7 @@ export class CaptureConsole implements Integration {
   /**
    * @inheritDoc
    */
-  public constructor (options: {levels?: string[]} = {}) {
+  public constructor (options: Readonly<{levels?: Readonly<string[]>}> = {}) {
     if (options.levels instanceof Array) {
       this.levels = options.levels;
     }
@@ -68,8 +68,7 @@ export class CaptureConsole implements Integration {
         }
 
         // this fails for some browsers. :(
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        if (originalConsoleMethod) {
+        if (typeof originalConsoleMethod === 'function') {
           // eslint-disable-next-line @typescript-eslint/ban-types
           (originalConsoleMethod.apply as Function)(global.console, args);
         }
