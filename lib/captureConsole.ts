@@ -1,3 +1,5 @@
+// Reference: https://github.com/getsentry/sentry-javascript/blob/master/packages/integrations/src/captureconsole.ts
+
 import {CONSOLE_LEVELS, fill, safeJoin, severityLevelFromString} from '@sentry/utils';
 import type {EventProcessor, Hub, Integration} from '@sentry/types';
 
@@ -16,14 +18,14 @@ export class CaptureConsole implements Integration {
   /**
    * Levels to intercept
    */
-  private readonly levels: readonly string[] = CONSOLE_LEVELS;
+  readonly #levels: readonly string[] = CONSOLE_LEVELS;
 
   /**
    * @inheritDoc
    */
   public constructor (options: Readonly<{levels?: Readonly<string[]>}> = {}) {
     if (options.levels instanceof Array) {
-      this.levels = options.levels;
+      this.#levels = options.levels;
     }
   }
 
@@ -35,7 +37,7 @@ export class CaptureConsole implements Integration {
       return;
     }
 
-    this.levels.forEach((level: string) => {
+    for (const level of this.#levels) {
       if (!(level in globalThis.console)) {
         return;
       }
@@ -70,9 +72,9 @@ export class CaptureConsole implements Integration {
         // this fails for some browsers. :(
         if (typeof originalConsoleMethod === 'function') {
           // eslint-disable-next-line @typescript-eslint/ban-types
-          (originalConsoleMethod.apply as Function)(global.console, args);
+          (originalConsoleMethod.apply as Function)(globalThis.console, args);
         }
       });
-    });
+    }
   }
 }

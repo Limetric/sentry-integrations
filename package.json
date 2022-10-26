@@ -2,7 +2,10 @@
   "name": "@limetric/sentry-integrations",
   "version": "1.2.0",
   "type": "module",
-  "main": "dist/entry.js",
+  "exports": {
+    "node": "./dist/node/entry.js",
+    "default": "./dist/entry.js"
+  },
   "scripts": {
     "build": "tsc",
     "test": "tsc --noEmit && eslint lib/"
