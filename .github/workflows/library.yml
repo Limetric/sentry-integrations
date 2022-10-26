@@ -28,7 +28,9 @@ jobs:
       # Build and test library
       - name: Build and test library
         run: |
+          echo -e "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}\n" >> ~/.npmrc
           npm ci --include=dev
+          rm -f ~/.npmrc
           npm test
           npm run build
         env:
@@ -39,6 +41,6 @@ jobs:
       - name: Publish release package
         if: github.ref_type == 'tag'
         run: |
-         echo -e "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}\n" > ~/.npmrc
+         echo -e "//npm.pkg.github.com/:_authToken=${{secrets.GITHUB_TOKEN}}\n" >> ~/.npmrc
          npm publish
          rm -f ~/.npmrc
