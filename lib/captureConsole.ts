@@ -6,7 +6,7 @@ import type {EventProcessor, Hub, Integration} from '@sentry/types';
 /** Send Console API calls as Sentry Events */
 export class CaptureConsole implements Integration {
   /**
-   * @inheritDoc
+   * Integration id
    */
   public static readonly id = 'CaptureConsole';
 

@@ -7,7 +7,7 @@ import util from 'util';
 /** Send Console API calls as breadcrumbs */
 export class ConsoleBreadcrumbs implements Integration {
   /**
-   * @inheritDoc
+   * Integration id
    */
   public static readonly id = 'ConsoleBreadcrumbs';
 
