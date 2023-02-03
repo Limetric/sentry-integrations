@@ -39,6 +39,6 @@
   },
   "dependencies": {
     "@sentry/types": "^7.34.0",
-    "@sentry/utils": "^7.16.0"
+    "@sentry/utils": "^7.36.0"
   }
 }
