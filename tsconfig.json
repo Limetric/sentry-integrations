@@ -1,6 +1,6 @@
-// Extends: https://github.com/tsconfig/bases/blob/main/bases/node18.json
+// Extends: https://github.com/tsconfig/bases/blob/main/bases/node20.json
 {
-  "extends": "@tsconfig/node18/tsconfig.json",
+  "extends": "@tsconfig/node20/tsconfig.json",
   "include": ["lib/**/*"],
   "compilerOptions": {
     "outDir": "dist",

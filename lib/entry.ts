@@ -1,1 +1,1 @@
-export {CaptureConsole} from './captureConsole.js';
+export {captureConsoleIntegration} from './captureConsole.js';

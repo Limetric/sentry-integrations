@@ -1,80 +1,81 @@
-// Reference: https://github.com/getsentry/sentry-javascript/blob/master/packages/integrations/src/captureconsole.ts
+import { captureException, captureMessage, defineIntegration, getClient, withScope } from '@sentry/core';
+import type { CaptureContext, IntegrationFn } from '@sentry/types';
+import {
+  CONSOLE_LEVELS,
+  GLOBAL_OBJ,
+  addConsoleInstrumentationHandler,
+  addExceptionMechanism,
+  safeJoin,
+  severityLevelFromString,
+} from '@sentry/utils';
 
-import {CONSOLE_LEVELS, fill, safeJoin, severityLevelFromString} from '@sentry/utils';
-import type {EventProcessor, Hub, Integration} from '@sentry/types';
+interface CaptureConsoleOptions {
+  levels?: string[];
+}
 
-/** Send Console API calls as Sentry Events */
-export class CaptureConsole implements Integration {
-  /**
-   * Integration id
-   */
-  public static readonly id = 'CaptureConsole';
+const INTEGRATION_NAME = 'CaptureConsole';
 
-  /**
-   * @inheritDoc
-   */
-  public readonly name = CaptureConsole.id;
+const _captureConsoleIntegration = ((options: CaptureConsoleOptions = {}) => {
+  const levels = options.levels || CONSOLE_LEVELS;
 
-  /**
-   * Levels to intercept
-   */
-  readonly #levels: readonly string[] = CONSOLE_LEVELS;
-
-  /**
-   * @inheritDoc
-   */
-  public constructor (options: Readonly<{levels?: Readonly<string[]>}> = {}) {
-    if (options.levels instanceof Array) {
-      this.#levels = options.levels;
-    }
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public setupOnce (_: (callback: EventProcessor) => void, getCurrentHub: () => Hub): void {
-    if (!('console' in globalThis)) {
-      return;
-    }
-
-    for (const level of this.#levels) {
-      if (!(level in globalThis.console)) {
+  return {
+    name: INTEGRATION_NAME,
+    setup(client) {
+      if (!('console' in GLOBAL_OBJ)) {
         return;
       }
 
-      fill(globalThis.console, level, (originalConsoleMethod: () => unknown) => (...args: unknown[]): void => {
-        const hub = getCurrentHub();
-
-        if (hub.getIntegration(CaptureConsole)) {
-          hub.withScope((scope) => {
-            scope.setLevel(severityLevelFromString(level));
-            scope.setExtra('arguments', args);
-            scope.addEventProcessor((event) => {
-              event.logger = 'console';
-              return event;
-            });
-
-            let message = safeJoin(args, ' ');
-            if (level === 'assert') {
-              if (args[0] === false) {
-                message = `Assertion failed: ${safeJoin(args.slice(1), ' ') || 'console.assert'}`;
-                scope.setExtra('arguments', args.slice(1));
-                hub.captureMessage(message);
-              }
-            } else if (['error', 'warn'].includes(level) && args[0] instanceof Error) {
-              hub.captureException(args[0]);
-            } else {
-              hub.captureMessage(message);
-            }
-          });
+      addConsoleInstrumentationHandler(({ args, level }) => {
+        if (getClient() !== client || !levels.includes(level)) {
+          return;
         }
 
-        // this fails for some browsers. :(
-        if (typeof originalConsoleMethod === 'function') {
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          (originalConsoleMethod.apply as Function)(globalThis.console, args);
-        }
+        consoleHandler(args, level);
       });
+    },
+    setupOnce() {}
+  };
+}) satisfies IntegrationFn;
+
+/**
+ * Send Console API calls as Sentry Events.
+ */
+export const captureConsoleIntegration = defineIntegration(_captureConsoleIntegration);
+
+function consoleHandler(args: unknown[], level: string): void {
+  const captureContext: CaptureContext = {
+    level: severityLevelFromString(level),
+    extra: {
+      arguments: args,
+    },
+  };
+
+  withScope(scope => {
+    scope.addEventProcessor(event => {
+      event.logger = 'console';
+
+      addExceptionMechanism(event, {
+        handled: false,
+        type: 'console',
+      });
+
+      return event;
+    });
+
+    if (level === 'assert' && args[0] === false) {
+      const message = `Assertion failed: ${safeJoin(args.slice(1), ' ') || 'console.assert'}`;
+      scope.setExtra('arguments', args.slice(1));
+      captureMessage(message, captureContext);
+      return;
     }
-  }
+
+    const error = args.find(arg => arg instanceof Error);
+    if (error) {
+      captureException(error, captureContext);
+      return;
+    }
+
+    const message = safeJoin(args, ' ');
+    captureMessage(message, captureContext);
+  });
 }

@@ -28,17 +28,18 @@
     "dist/"
   ],
   "devDependencies": {
-    "@limetric/eslint-config": "^1.5.0",
-    "@tsconfig/node18": "^1.0.1",
-    "@types/node": "^18.11.7",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "browserslist": "^4.21.4",
-    "eslint": "^8.33.0",
-    "typescript": "^4.8.4"
+    "@eslint/js": "^8.56.0",
+    "@sentry/types": "^7.102.0",
+    "@tsconfig/node20": "^20.1.2",
+    "@types/node": "^20.11.19",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "browserslist": "^4.23.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^7.0.2"
   },
-  "dependencies": {
-    "@sentry/types": "^7.34.0",
-    "@sentry/utils": "^7.16.0"
+  "peerDependencies": {
+    "@sentry/core": "^7.101.1",
+    "@sentry/utils": "^7.101.1"
   }
 }
