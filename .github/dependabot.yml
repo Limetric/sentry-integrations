@@ -5,12 +5,3 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-      time: "09:30"
-      timezone: "Europe/Amsterdam"
-  # Maintain dependencies for npm
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      time: "09:30"
-      timezone: "Europe/Amsterdam"
