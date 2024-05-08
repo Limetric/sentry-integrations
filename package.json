@@ -29,14 +29,14 @@
   ],
   "devDependencies": {
     "@eslint/js": "^8.56.0",
-    "@sentry/types": "^7.102.0",
-    "@tsconfig/node20": "^20.1.2",
-    "@types/node": "^20.11.19",
-    "@typescript-eslint/eslint-plugin": "^7.0.2",
-    "@typescript-eslint/parser": "^7.0.2",
+    "@sentry/types": "^7.114.0",
+    "@tsconfig/node20": "^20.1.4",
+    "@types/node": "^20.12.10",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "browserslist": "^4.23.0",
-    "typescript": "^5.3.3",
-    "typescript-eslint": "^7.0.2"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0"
   },
   "peerDependencies": {
     "@sentry/core": "^7.101.1",
